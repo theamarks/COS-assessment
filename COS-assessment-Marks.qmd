@@ -6,6 +6,8 @@ format:
   html:
     toc: true
     toc-location: left
+editor_options: 
+  chunk_output_type: console
 ---
 
 ## Purpose
