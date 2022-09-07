@@ -1,0 +1,35 @@
+---
+title: "Stanford Center for Ocean Solutions"
+subtitle: "Practical Assessment for a Research Data Analyst"
+author: "Althea Marks"
+format: html
+editor: visual
+---
+
+## Purpose
+
+This Practical Assessment for recruitment of the Research Data Analyst is intended to be a self-guided exercise based on the information provided. Please review the information from the three csv files included in the \"data\" folder as well as the assessment questions below and reply with your submission by or before the time noted via the corresponding email.
+
+## Read in Data
+
+```{r data_output_directories}
+# create data directory path
+data_path <- file.path("data")
+
+# create output pathway
+out_path <- dir.create("output") 
+
+# read in data
+vessel_assess <- read.csv(file = file.path(data_path, "GFWVesselAssessment.csv"))
+port_visit_peru <- read.csv(file = file.path(data_path, "port_visit_peru.csv"))
+vessel_info <- read.csv(file = file.path(data_path, "vessel_information.csv"))
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
