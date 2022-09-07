@@ -2,13 +2,15 @@
 title: "Stanford Center for Ocean Solutions"
 subtitle: "Practical Assessment for a Research Data Analyst"
 author: "Althea Marks"
-format: html
-editor: visual
+format:
+  html:
+    toc: true
+    toc-location: left
 ---
 
 ## Purpose
 
-This Practical Assessment for recruitment of the Research Data Analyst is intended to be a self-guided exercise based on the information provided. Please review the information from the three csv files included in the \"data\" folder as well as the assessment questions below and reply with your submission by or before the time noted via the corresponding email.
+This Practical Assessment for recruitment of the Research Data Analyst is intended to be a self-guided exercise based on the information provided. Please review the information from the three csv files included in the "data" folder as well as the assessment questions below and reply with your submission by or before the time noted via the corresponding email.
 
 ## Read in Data
 
@@ -25,11 +27,59 @@ port_visit_peru <- read.csv(file = file.path(data_path, "port_visit_peru.csv"))
 vessel_info <- read.csv(file = file.path(data_path, "vessel_information.csv"))
 ```
 
-You can add options to executable code like this
+`vessel_assess` summarizes vessel information:
 
-```{r}
-#| echo: false
-2 * 2
+-   `Vessel.Name` name of vessel
+-   `IMO` vessel number (International Maritime Organization)
+-   `Flag` country of the vessel flag
+
+`port_visit_peru` summarizes port visit events by maritime vessels in Peru (ISO3 code: PER) from 2020 to 2022
+
+-   `ssvid` vessel identity (Maritime Mobile Service Identity)
+-   `timestamp` time of the visit
+-   `label` port name
+-   `lat` latitude of the port
+-   `lon` longitude of the port
+
+`vessel_info` summarizes vessel information
+
+-   `ssvid` vessel identity (Maritime Mobile Service Identity)
+-   `flag`: ISO3 code of the vessel flag (i.e., country where a vessel is under jurisdiction)
+-   `vessel_class` fishing, carrier vessels, bunker vessels, etc.
+-   `gear_type` type of fishing gear for fishing vessels
+
+## Assessment Questions
+
+### Familiarity with Content
+
+The initial assessment content focuses on the candidate's existing familiarity with the relevant content of interest, or the ability to quickly familiarize oneself with new content and terminology.
+
+Using `vessel_assess`:
+
+1.  Which vessels (if any) are listed as iUU vessels ([Combined IUU Vessel List](https://www.iuu-vessels.org/))
+    -   For each vessel listed as an IUU vessel: state the Regional Fisheries Management Organization (RFMO) for which the vessel is IUU listed.
+
+2. Using resources available online, which vessels (if any) have flags that have been identified as Flags of Convenience?
+    -   Please provide the citation for where you found this information
+
+```{r content_familiarity}
+
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+### Analysis Techniques
+
+The secondary assessment content focuses on the candidate’s approach to analysis techniques and communication methods.
+
+Using `port_visit_peru` and `vessel_info`:
+
+3.  For each port in 2021: calculate the proportion of the number of foreign fishing vessel visits over the number of all vessel visits by fishing vessels of any gear type.
+    -   Include blank `gear_type` cells and exclude blank `flag` cells.
+    -   "foreign vessel visit" means the port visit by vessels whose flag state is different from the port state. 
+    
+4.  Among ports that recieved more than 10 visits by fishing vessels of any gear type (including blank `gear_type`) in 2021, plot the top 10 ports that recieved the highest proportions of foreign vessel visits (choose any plot format that you think is appropriate and best visualizes the patterns).
+
+5.  Submit a summary of the steps you took so that we can follow your logic (for example annotated script, Jupyter Notebook, R Markdown, or any format of your choice). 
+
+```{r analysis_techniques}
+
+```
