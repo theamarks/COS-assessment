@@ -116,13 +116,6 @@ knitr::kable(iuu_vessels,
 
 # vessel_assess
 
-# scrape table from wikipedia
-wiki_foc <- read_html("https://en.wikipedia.org/wiki/Flag_of_convenience") %>% 
-  html_node(xpath = '/html/body/div[3]/div[3]/div[5]/div[1]/table[2]') %>%
-  html_table(fill = TRUE) 
-# rename column names
-names(wiki_foc) <- c("Flag_state", "Ships_registered", "Bulk_carriers", "Container_ships", "General_cargo", "Oil_tankers", "other")
-
 # scrape table from ITF Seafarers
 itf_foc <- read_html("https://www.itfseafarers.org/en/focs/current-registries-listed-as-focs") %>% 
   html_node(xpath = "/html/body/div[1]/div/div[2]/main/div[2]/div/div/div[3]/article/div/div[1]/ul") %>% 
