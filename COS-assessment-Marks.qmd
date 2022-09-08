@@ -40,6 +40,7 @@ vessel_info <- read.csv(file = file.path(data_path, "vessel_information.csv"),
 library(tidyverse) # wrangling and visualizing
 library(magrittr)
 library(knitr)
+library(rvest) # webscraping
 ```
 
 `vessel_assess` summarizes vessel information:
@@ -74,7 +75,7 @@ Using `vessel_assess`:
 1.  Which vessels (if any) are listed as IUU (ilegal, unreported and unregulated) vessels ([Combined IUU Vessel List](https://www.iuu-vessels.org/))
     -   For each vessel listed as an IUU vessel: state the Regional Fisheries Management Organization (RFMO) for which the vessel is IUU listed.
 
-```{r content_familiarity}
+```{r question_1}
 # Could conect via IUU Vessels API https://github.com/ano/IUU-Vessels-API
 # Or manually download IUU list from website
 
@@ -109,6 +110,26 @@ knitr::kable(iuu_vessels,
 
 2.  Using resources available online, which vessels (if any) have flags that have been identified as Flags of Convenience?
     -   Please provide the citation for where you found this information
+
+```{r question_2}
+# paper assessing FOC (flags of convenience) - https://doi.org/10.1016/j.marpol.2020.103937
+
+# vessel_assess
+
+# scrape table from wikipedia
+wiki_foc <- read_html("https://en.wikipedia.org/wiki/Flag_of_convenience") %>% 
+  html_node(xpath = '/html/body/div[3]/div[3]/div[5]/div[1]/table[2]') %>%
+  html_table(fill = TRUE) 
+# rename column names
+names(wiki_foc) <- c("Flag_state", "Ships_registered", "Bulk_carriers", "Container_ships", "General_cargo", "Oil_tankers", "other")
+
+# scrape table from ITF Seafarers
+itf_foc <- read_html("https://www.itfseafarers.org/en/focs/current-registries-listed-as-focs") %>% 
+  html_node(xpath = "/html/body/div[1]/div/div[2]/main/div[2]/div/div/div[3]/article/div/div[1]/ul") %>% 
+  html_elements("li") %>% 
+  html_text2()
+itf_foc
+```
 
 ### Analysis Techniques
 
