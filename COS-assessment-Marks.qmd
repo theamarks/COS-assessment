@@ -27,20 +27,24 @@ data_path <- file.path("data")
 out_path <- dir.create("output") 
 
 # read in data
-vessel_assess <- read.csv(file = file.path(data_path, "GFWVesselAssessment.csv"),
+vessel_assess <- read.csv(file = file.path(data_path, 
+                                           "GFWVesselAssessment.csv"),
                           na.strings=c("","NA"))
-port_visit_peru <- read.csv(file = file.path(data_path, "port_visit_peru.csv"),
+port_visit_peru <- read.csv(file = file.path(data_path, 
+                                             "port_visit_peru.csv"),
                             na.strings=c("","NA"))
-vessel_info <- read.csv(file = file.path(data_path, "vessel_information.csv"),
+vessel_info <- read.csv(file = file.path(data_path, 
+                                         "vessel_information.csv"),
                         na.strings=c("","NA"))
 ```
 
 ```{r packages}
 # load required libraries
 library(tidyverse) # wrangling and visualizing
-library(magrittr)
-library(knitr)
+library(magrittr) # pipe function
+library(knitr) # rendering this quarto doc
 library(rvest) # webscraping
+library(lubridate) # dates and time
 ```
 
 `vessel_assess` summarizes vessel information:
@@ -76,8 +80,6 @@ Using `vessel_assess`:
     -   For each vessel listed as an IUU vessel: state the Regional Fisheries Management Organization (RFMO) for which the vessel is IUU listed.
 
 ```{r question_1}
-# Could conect via IUU Vessels API https://github.com/ano/IUU-Vessels-API
-# Or manually download IUU list from website
 
 # read in IUU list 
 iuu_list <- read.csv(file.path(data_path, "IUU_list.csv"), 
@@ -105,17 +107,12 @@ knitr::kable(iuu_vessels,
              align = "lll", 
              caption = "Global Fishing Watch Vessels Currently Listed as IUU Vessels",
              col.names = gsub("[.]", " ", names(iuu_vessels)))
-
 ```
 
-2.  Using resources available online, which vessels (if any) have flags that have been identified as Flags of Convenience?
+3.  Using resources available online, which vessels (if any) have flags that have been identified as Flags of Convenience?
     -   Please provide the citation for where you found this information
 
 ```{r question_2}
-# paper assessing FOC (flags of convenience) - https://doi.org/10.1016/j.marpol.2020.103937
-
-# vessel_assess
-
 # scrape table from ITF Seafarers (International Transport Workers Federation)
 itf_foc <- read_html("https://www.itfseafarers.org/en/focs/current-registries-listed-as-focs") %>% 
   html_node(xpath = "/html/body/div[1]/div/div[2]/main/div[2]/div/div/div[3]/article/div/div[1]/ul") %>% 
@@ -127,14 +124,18 @@ itf_foc <- read_html("https://www.itfseafarers.org/en/focs/current-registries-li
 # vessels with flags that match in ITF FOC list
 foc_vessels <- vessel_assess %>% 
   semi_join(itf_foc, by = "Flag")
-  
+
+# table for html doc
 knitr::kable(foc_vessels,
              align = "lll", 
              caption = "Global Fishing Watch Vessels with Flags of Convience",
              col.names = gsub("[.]", " ", names(foc_vessels)))
 
-
 ```
+
+Citation for FOC list:
+
+"Current Registries Listed as FOCs". *ITF Seafarers*, <https://www.itfseafarers.org/en/focs/current-registries-listed-as-focs>. London: International Transport Workers' Federation. Accessed 7 Sept. 2022.
 
 ### Analysis Techniques
 
@@ -147,10 +148,24 @@ Using `port_visit_peru` and `vessel_info`:
     -   Include blank `gear_type` cells and exclude blank `flag` cells.
     -   "foreign vessel visit" means the port visit by vessels whose flag state is different from the port state.
 
+```{r analysis_techniques}
+# check values of vessel class
+unique(vessel_info$vessel_class)
+# check for NA values
+any(is.na(vessel_info$flag))
+
+# remove blank flag rows and non-fishing vessels
+vessel_info_2 <- vessel_info %>%
+  filter(!is.na(flag),
+         vessel_class == "fishing")
+
+# convert time to ymdhms, keep 2021 year only
+port_visit_peru_2 <- port_visit_peru %>% 
+  mutate("timestamp" = ymd_hms(timestamp)) %>% 
+  filter(year(timestamp) == "2021")
+  
+```
+
 4.  Among ports that received more than 10 visits by fishing vessels of any gear type (including blank `gear_type`) in 2021, plot the top 10 ports that received the highest proportions of foreign vessel visits (choose any plot format that you think is appropriate and best visualizes the patterns).
 
 5.  Submit a summary of the steps you took so that we can follow your logic (for example annotated script, Jupyter Notebook, R Markdown, or any format of your choice).
-
-```{r analysis_techniques}
-
-```
