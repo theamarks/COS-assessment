@@ -116,12 +116,24 @@ knitr::kable(iuu_vessels,
 
 # vessel_assess
 
-# scrape table from ITF Seafarers
+# scrape table from ITF Seafarers (International Transport Workers Federation)
 itf_foc <- read_html("https://www.itfseafarers.org/en/focs/current-registries-listed-as-focs") %>% 
   html_node(xpath = "/html/body/div[1]/div/div[2]/main/div[2]/div/div/div[3]/article/div/div[1]/ul") %>% 
   html_elements("li") %>% 
-  html_text2()
-itf_foc
+  html_text2() %>% 
+  as_tibble() %>% 
+  rename("Flag" = value) # name variable column
+
+# vessels with flags that match in ITF FOC list
+foc_vessels <- vessel_assess %>% 
+  semi_join(itf_foc, by = "Flag")
+  
+knitr::kable(foc_vessels,
+             align = "lll", 
+             caption = "Global Fishing Watch Vessels with Flags of Convience",
+             col.names = gsub("[.]", " ", names(foc_vessels)))
+
+
 ```
 
 ### Analysis Techniques
