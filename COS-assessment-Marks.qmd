@@ -45,6 +45,9 @@ library(magrittr) # pipe function
 library(knitr) # rendering this quarto doc
 library(rvest) # webscraping
 library(lubridate) # dates and time
+library(viridis) # color blind color palett
+library(forcats) # wroking with factors
+library(scales) # changing graph scales
 ```
 
 `vessel_assess` summarizes vessel information:
@@ -148,7 +151,7 @@ Using `port_visit_peru` and `vessel_info`:
     -   Include blank `gear_type` cells and exclude blank `flag` cells.
     -   "foreign vessel visit" means the port visit by vessels whose flag state is different from the port state.
 
-```{r analysis_techniques}
+```{r question_3}
 # check values of vessel class
 unique(vessel_info$vessel_class)
 
@@ -178,4 +181,29 @@ knitr::kable(peru_fishves_2021_sum,
 
 4.  Among ports that received more than 10 visits by fishing vessels of any gear type (including blank `gear_type`) in 2021, plot the top 10 ports that received the highest proportions of foreign vessel visits (choose any plot format that you think is appropriate and best visualizes the patterns).
 
-5.  Submit a summary of the steps you took so that we can follow your logic (for example annotated script, Jupyter Notebook, R Markdown, or any format of your choice).
+```{r question_4}
+# ports with more than 10 fishing vessel visits
+top_10_prop <- peru_fishves_2021_sum %>% # blank gear_type included here
+  filter(n_all > 10) %>% 
+  arrange(desc(prop_foreign_vessels)) %>% # sort highest to lowest
+  filter(prop_foreign_vessels == prop_foreign_vessels[1:10]) %>%  # top 10
+  mutate(label = factor(label), # label variable as factor
+         label = fct_reorder(label, prop_foreign_vessels)) # reorder factor by prop
+
+graph_top_10 <- top_10_prop %>% 
+  ggplot(aes(prop_foreign_vessels, label)) + 
+  geom_col(aes(fill = label)) + # bar graph
+  theme_classic() + # clean theme
+  scale_fill_viridis(discrete = TRUE, option = "G") + # color blind friendly 
+  scale_x_continuous(labels = scales::percent, # axis in percent
+                     limits = c(0,1)) + # expand x axis to 100%
+  theme(legend.position="none", # remove legend
+        axis.title.y = element_blank()) + # remove y axis title
+  labs(x = "Proportion of Foreign Fishing Vessel Visits",
+       title = "Peruvian Ports with Highest Foreign Fishing Vessel Visits",
+       subtitle = "2021 Ports with over 10 visits")
+
+graph_top_10
+```
+
+4.  Submit a summary of the steps you took so that we can follow your logic (for example annotated script, Jupyter Notebook, R Markdown, or any format of your choice).
