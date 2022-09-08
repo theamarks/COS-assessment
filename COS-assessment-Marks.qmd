@@ -108,7 +108,7 @@ iuu_vessels <- vessel_assess %>%
 # display results
 knitr::kable(iuu_vessels, 
              align = "lll", 
-             caption = "Global Fishing Watch Vessels Currently Listed as IUU Vessels",
+             caption = "Vessels Currently Listed as IUU Vessels",
              col.names = gsub("[.]", " ", names(iuu_vessels)))
 ```
 
@@ -131,7 +131,7 @@ foc_vessels <- vessel_assess %>%
 # table for html doc
 knitr::kable(foc_vessels,
              align = "lll", 
-             caption = "Global Fishing Watch Vessels with Flags of Convience",
+             caption = "Vessels with Flags of Convience",
              col.names = gsub("[.]", " ", names(foc_vessels)))
 
 ```
