@@ -73,8 +73,6 @@ Using `vessel_assess`:
 
 1.  Which vessels (if any) are listed as IUU (ilegal, unreported and unregulated) vessels ([Combined IUU Vessel List](https://www.iuu-vessels.org/))
     -   For each vessel listed as an IUU vessel: state the Regional Fisheries Management Organization (RFMO) for which the vessel is IUU listed.
-2.  Using resources available online, which vessels (if any) have flags that have been identified as Flags of Convenience?
-    -   Please provide the citation for where you found this information
 
 ```{r content_familiarity}
 # Could conect via IUU Vessels API https://github.com/ano/IUU-Vessels-API
@@ -89,16 +87,28 @@ vessel_assess %<>%
   drop_na(Vessel.Name) %>% 
   select(1:3)
 
-# which vessels in `vessel_assess` is listed in `iuu_list` match by IMO
-iuu_vessels <- vessel_assess %>% 
-  semi_join(iuu_list, by = "IMO")
+# check values of column
+unique(iuu_list$CurrentlyListed)
 
+# filter vessels by currently listed
+iuu_list_current <- iuu_list %>% 
+  filter(CurrentlyListed == "True") %>% 
+  select(3:4) # remove unneeded columns for join
+  
+# which vessels in `vessel_assess` is listed in `iuu_list_current` match by IMO
+iuu_vessels <- vessel_assess %>% 
+  inner_join(iuu_list_current, by = "IMO") # pull RFMO column over
+
+# display results
 knitr::kable(iuu_vessels, 
              align = "lll", 
-             caption = "Global Fishing Watch Vessels Listed as IUU Vessels",
+             caption = "Global Fishing Watch Vessels Currently Listed as IUU Vessels",
              col.names = gsub("[.]", " ", names(iuu_vessels)))
 
 ```
+
+2.  Using resources available online, which vessels (if any) have flags that have been identified as Flags of Convenience?
+    -   Please provide the citation for where you found this information
 
 ### Analysis Techniques
 
