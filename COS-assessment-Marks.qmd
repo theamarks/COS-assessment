@@ -146,7 +146,7 @@ The secondary assessment content focuses on the candidate's approach to analysis
 
 Using `port_visit_peru` and `vessel_info`:
 
-3.  For each port in 2021: calculate the proportion of the number of foreign fishing vessel visits over the number of all vessel visits by fishing vessels of any gear type.
+4.  For each port in 2021: calculate the proportion of the number of foreign fishing vessel visits over the number of all vessel visits by fishing vessels of any gear type.
 
     -   Include blank `gear_type` cells and exclude blank `flag` cells.
     -   "foreign vessel visit" means the port visit by vessels whose flag state is different from the port state.
@@ -179,7 +179,7 @@ knitr::kable(peru_fishves_2021_sum,
              caption = "The Proportion of Foriegn Fishing Vessels by Peruvian Ports 2021")
 ```
 
-4.  Among ports that received more than 10 visits by fishing vessels of any gear type (including blank `gear_type`) in 2021, plot the top 10 ports that received the highest proportions of foreign vessel visits (choose any plot format that you think is appropriate and best visualizes the patterns).
+5.  Among ports that received more than 10 visits by fishing vessels of any gear type (including blank `gear_type`) in 2021, plot the top 10 ports that received the highest proportions of foreign vessel visits (choose any plot format that you think is appropriate and best visualizes the patterns).
 
 ```{r question_4}
 # ports with more than 10 fishing vessel visits
@@ -206,4 +206,4 @@ graph_top_10 <- top_10_prop %>%
 graph_top_10
 ```
 
-4.  Submit a summary of the steps you took so that we can follow your logic (for example annotated script, Jupyter Notebook, R Markdown, or any format of your choice).
+6.  Submit a summary of the steps you took so that we can follow your logic (for example annotated script, Jupyter Notebook, R Markdown, or any format of your choice).
