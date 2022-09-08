@@ -2,6 +2,8 @@
 title: "Stanford Center for Ocean Solutions"
 subtitle: "Practical Assessment for a Research Data Analyst"
 author: "Althea Marks"
+date: 2022-09-08
+date-format: long
 format:
   html:
     toc: true
