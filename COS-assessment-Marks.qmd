@@ -151,19 +151,24 @@ Using `port_visit_peru` and `vessel_info`:
 ```{r analysis_techniques}
 # check values of vessel class
 unique(vessel_info$vessel_class)
-# check for NA values
-any(is.na(vessel_info$flag))
 
 # remove blank flag rows and non-fishing vessels
 vessel_info_2 <- vessel_info %>%
-  filter(!is.na(flag),
-         vessel_class == "fishing")
+  filter(vessel_class == "fishing")
 
-# convert time to ymdhms, keep 2021 year only
-port_visit_peru_2 <- port_visit_peru %>% 
-  mutate("timestamp" = ymd_hms(timestamp)) %>% 
-  filter(year(timestamp) == "2021")
-  
+# filter and combine dataframes
+peru_fishves_2021 <- port_visit_peru %>% 
+  mutate("timestamp" = ymd_hms(timestamp)) %>% # convert time to ymdhms
+  filter(year(timestamp) == "2021") %>% # only use 2021 observations
+  left_join(vessel_info_2, by = "ssvid") %>% # match to vessel info by ssvid
+  filter(!is.na(flag)) # remove NA flag rows
+
+# summary table with proportion of foreign fishing vessels / all fishing vessels
+peru_fishves_2021_sum <- peru_fishves_2021 %>% 
+  group_by(label) %>% # results by each port
+  summarise(n_foreign = sum(flag == "PER"), # how many peru flag observations
+            n_all = length(flag), # how many total flag observations
+            prop_foreign_all = n_foreign/n_all) # calculate prop
 ```
 
 4.  Among ports that received more than 10 visits by fishing vessels of any gear type (including blank `gear_type`) in 2021, plot the top 10 ports that received the highest proportions of foreign vessel visits (choose any plot format that you think is appropriate and best visualizes the patterns).
