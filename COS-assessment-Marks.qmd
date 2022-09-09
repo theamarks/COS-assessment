@@ -29,14 +29,13 @@ data_path <- file.path("data")
 out_path <- dir.create("output") 
 
 # read in data
-vessel_assess <- read.csv(file = file.path(data_path, 
-                                           "GFWVesselAssessment.csv"),
+vessel_assess <- read.csv(file = file.path(data_path, "GFWVesselAssessment.csv"),
                           na.strings=c("","NA"))
-port_visit_peru <- read.csv(file = file.path(data_path, 
-                                             "port_visit_peru.csv"),
+
+port_visit_peru <- read.csv(file = file.path(data_path, "port_visit_peru.csv"),
                             na.strings=c("","NA"))
-vessel_info <- read.csv(file = file.path(data_path, 
-                                         "vessel_information.csv"),
+
+vessel_info <- read.csv(file = file.path(data_path, "vessel_information.csv"),
                         na.strings=c("","NA"))
 ```
 
@@ -103,7 +102,7 @@ iuu_list_current <- iuu_list %>%
   filter(CurrentlyListed == "True") %>% 
   select(3:4) # remove unneeded columns for join
   
-# which vessels in `vessel_assess` is listed in `iuu_list_current` match by IMO
+# which vessels in `vessel_assess` are listed in `iuu_list_current` match by IMO
 iuu_vessels <- vessel_assess %>% 
   inner_join(iuu_list_current, by = "IMO") # pull RFMO column over
 
@@ -114,11 +113,11 @@ knitr::kable(iuu_vessels,
              col.names = gsub("[.]", " ", names(iuu_vessels)))
 ```
 
-3.  Using resources available online, which vessels (if any) have flags that have been identified as Flags of Convenience?
+2.  Using resources available online, which vessels (if any) have flags that have been identified as Flags of Convenience?
     -   Please provide the citation for where you found this information
 
 ```{r question_2}
-# scrape table from ITF Seafarers (International Transport Workers Federation)
+# scrape FOC list from ITF Seafarers (International Transport Workers Federation)
 itf_foc <- read_html("https://www.itfseafarers.org/en/focs/current-registries-listed-as-focs") %>% 
   html_node(xpath = "/html/body/div[1]/div/div[2]/main/div[2]/div/div/div[3]/article/div/div[1]/ul") %>% 
   html_elements("li") %>% 
@@ -148,7 +147,7 @@ The secondary assessment content focuses on the candidate's approach to analysis
 
 Using `port_visit_peru` and `vessel_info`:
 
-4.  For each port in 2021: calculate the proportion of the number of foreign fishing vessel visits over the number of all vessel visits by fishing vessels of any gear type.
+3.  For each port in 2021: calculate the proportion of the number of foreign fishing vessel visits over the number of all vessel visits by fishing vessels of any gear type.
 
     -   Include blank `gear_type` cells and exclude blank `flag` cells.
     -   "foreign vessel visit" means the port visit by vessels whose flag state is different from the port state.
@@ -171,7 +170,7 @@ peru_fishves_2021 <- port_visit_peru %>%
 # summary table with proportion of foreign fishing vessels / all fishing vessels
 peru_fishves_2021_sum <- peru_fishves_2021 %>% 
   group_by(label) %>% # results by each port
-  summarise(n_foreign = sum(flag != "PER"), # n foriegn flag observations
+  summarise(n_foreign = sum(flag != "PER"), # n foreign flag observations
             n_all = length(flag), # n total flag observations
             prop_foreign_vessels = round(n_foreign/n_all, 
                                      digits = 3)) # calculate proportion
@@ -201,11 +200,10 @@ graph_top_10 <- top_10_prop %>%
                      limits = c(0,1)) + # expand x axis to 100%
   theme(legend.position="none", # remove legend
         axis.title.y = element_blank()) + # remove y axis title
-  labs(x = "Proportion of Foreign Fishing Vessel Visits",
-       title = "Peruvian Ports with Highest Foreign Fishing Vessel Visits",
-       subtitle = "2021 Ports with over 10 visits")
+  labs(x = "Proportion of All Visits by Foreign Fishing Vessel",
+       title = "Peruvian Ports with Highest Foreign Fishing Vessel Visits - 2021",
+       subtitle = "(Ports with over 10 visits)")
 
 graph_top_10
 ```
 
-6.  Submit a summary of the steps you took so that we can follow your logic (for example annotated script, Jupyter Notebook, R Markdown, or any format of your choice).
