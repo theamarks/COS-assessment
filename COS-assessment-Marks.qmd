@@ -23,6 +23,7 @@ This Practical Assessment for recruitment of the Research Data Analyst is intend
 
 ```{r setup}
 # create data directory path
+# All data files are stored within "data" folder ./data
 data_path <- file.path("data")
 
 # create output pathway
